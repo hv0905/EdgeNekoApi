@@ -17,11 +17,7 @@ public class MusicController : ControllerBase
     [HttpGet]
     public async Task<NiProtocol> RandomSong()
     {
-        if (_musicService.AvailMusics.Count == 0)
-        {
-            await _musicService.UpdateMusic();
-        }
-        
+
         var random = new Random();
         var index = random.Next(0, _musicService.AvailMusics.Count);
         var music = _musicService.AvailMusics[index];
