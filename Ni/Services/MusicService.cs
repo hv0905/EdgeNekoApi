@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Runtime.CompilerServices;
+
 using Ni.Models;
 using Ni.Models.Bilibili;
 using Ni.Models.Config;
@@ -37,15 +38,15 @@ namespace Ni.Services
         {
             List<Music> musics = new();
             var client = _httpClientFactory.CreateClient();
-            
+
             foreach (var uid in uids)
             {
                 _logger.LogInformation("Collect music from uid: " + uid);
                 int pn = 1;
                 // get music result from uid
-                while (true)
+                try
                 {
-                    try
+                    while (true)
                     {
                         var url =
                             $"https://api.bilibili.com/x/space/arc/search?mid={uid}&ps=50&tid=3&pn={pn}&order=pubdate";
@@ -55,32 +56,28 @@ namespace Ni.Services
                             throw new Exception($"BiliApi error! \n Trying get uid: {uid} \n Code: {response.Code}\n Message: {response.Message}");
                         }
 
-                        var count = response.Data.Page.Count;
-                        foreach (var item in response.Data.List.VList)
+                        musics.AddRange(response.Data.List.VList.Select(t => new Music()
                         {
-                            var music = new Music
-                            {
-                                Id = item.Aid,
-                                Name = item.Title,
-                                AuthorName = item.Author,
-                                CoverUrl = item.Pic,
-                                Url = $"https://www.bilibili.com/video/{item.Bvid}",
-                                Source = "bilibili",
-                                Description = item.Description
-                            };
-                            musics.Add(music);
-                        }
+                            Id = t.Aid,
+                            Name = t.Title,
+                            AuthorName = t.Author,
+                            CoverUrl = t.Pic,
+                            Url = $"https://www.bilibili.com/video/{t.Bvid}",
+                            Source = "bilibili",
+                            Description = t.Description
+                        }));
 
-                        if (50 * pn >= count)
+                        if (50 * pn >= response.Data.Page.Count) // last page
                         {
                             break;
                         }
                         ++pn;
+
                     }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e.Message);
-                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.Message);
                 }
             }
 
