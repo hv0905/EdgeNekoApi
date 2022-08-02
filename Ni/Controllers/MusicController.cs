@@ -22,11 +22,31 @@ public class MusicController : ControllerBase
         var index = random.Next(0, _musicService.AvailMusics.Count);
         var music = _musicService.AvailMusics[index];
         music.Id = index;
-        return new NiDataProtocol<Music>()
+        return new NiDataProtocol<Music>
         {
             Data = music,
             Code = ErrorCode.Success,
             Message = "Successfully get a random song, Enjoy!"
+        };
+    }
+    
+    public async Task<NiProtocol> Index(int id)
+    {
+        if (id < 0 || id >= _musicService.AvailMusics.Count)
+        {
+            return new NiDataProtocol<Music>
+            {
+                Code = ErrorCode.InvalidInput,
+                Message = "Invalid parameter"
+            };
+        }
+        var music = _musicService.AvailMusics[id];
+        music.Id = id;
+        return new NiDataProtocol<Music>
+        {
+            Data = music,
+            Code = ErrorCode.Success,
+            Message = "Successfully get a song, Enjoy!"
         };
     }
 }
