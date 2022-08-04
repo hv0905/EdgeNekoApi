@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Mvc;
 using Ni.Models;
 
 namespace Ni.Controllers;
@@ -24,7 +25,7 @@ public class HomeController : ControllerBase
             Mode = environment.EnvironmentName,
             ServerTime = DateTime.Now,
             ServerTimeUtc = DateTime.UtcNow,
-            ServerRuntime = $"Microsoft .Net Core {Environment.Version} on {Environment.OSVersion.ToString()}"
+            ServerRuntime = $"{RuntimeInformation.FrameworkDescription} on {RuntimeInformation.OSDescription}"
         };
     }
 }

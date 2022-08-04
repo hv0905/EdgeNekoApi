@@ -7,7 +7,7 @@ public class BiliSearchData
     public class BiliDataListInfo
     {
         [JsonPropertyName("vlist")]
-        public List<BiliVideoInfo> VList { get; set; }
+        public List<BiliVideoInfo>? VList { get; set; }
     }
 
     public class PageInfo
@@ -20,7 +20,7 @@ public class BiliSearchData
         public int Count { get; set; }
     }
     [JsonPropertyName("list")]
-    public BiliDataListInfo List { get; set; }
+    public BiliDataListInfo? List { get; set; }
     [JsonPropertyName("page")]
-    public PageInfo Page { get; set; }
+    public PageInfo? Page { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Ni.Models;
 using Ni.Services;
@@ -15,7 +15,7 @@ public class MusicController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<NiProtocol> RandomSong()
+    public NiProtocol RandomSong()
     {
 
         var random = new Random();
@@ -30,7 +30,8 @@ public class MusicController : ControllerBase
         };
     }
     
-    public async Task<NiProtocol> Index(int id)
+    [HttpGet]
+    public NiProtocol ById([Required]int id)
     {
         if (id < 0 || id >= _musicService.AvailMusics.Count)
         {

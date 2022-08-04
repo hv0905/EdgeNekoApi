@@ -11,31 +11,31 @@ public class BiliVideoInfo
     [JsonPropertyName("play")]
     public int Play { get; set; }
     [JsonPropertyName("pic")]
-    public string Pic { get; set; }
+    public string? Pic { get; set; }
     [JsonPropertyName("subtitle")]
-    public string Subtitle { get; set; }
+    public string? Subtitle { get; set; }
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     [JsonPropertyName("copyright")]
     public int Copyright { get; set; }
     [JsonPropertyName("title")]
-    public string Title { get; set; }
+    public string? Title { get; set; }
     [JsonPropertyName("review")]
     public int Review { get; set; }
     [JsonPropertyName("author")]
-    public string Author { get; set; }
+    public string? Author { get; set; }
     [JsonPropertyName("mid")]
     public int Mid { get; set; }
     [JsonPropertyName("created")]
     public int Created { get; set; }
     [JsonPropertyName("length")]
-    public string Length { get; set; }
+    public string? Length { get; set; }
     [JsonPropertyName("video_review")]
     public int VideoReview { get; set; }
     [JsonPropertyName("aid")]
     public int Aid { get; set; }
     [JsonPropertyName("bvid")]
-    public string Bvid { get; set; }
+    public string? Bvid { get; set; }
     [JsonPropertyName("hide_click")]
     public bool HideClick { get; set; }
     [JsonPropertyName("is_pay")]

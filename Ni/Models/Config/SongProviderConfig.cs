@@ -2,5 +2,5 @@
 
 public class SongProviderConfig
 {
-    public List<string> Bilibili { get; set; }
+    public List<string>? Bilibili { get; set; }
 }

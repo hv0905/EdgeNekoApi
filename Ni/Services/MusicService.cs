@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Runtime.CompilerServices;
-using Ni.Models;
+﻿using Ni.Models;
 using Ni.Models.Bilibili;
 using Ni.Models.Config;
 
@@ -11,8 +9,6 @@ public class MusicService
     private readonly IConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<MusicService> _logger;
-
-    private const int BILI_TID = 3;
 
     public List<Music> AvailMusics { get; set; } = new();
 
@@ -28,12 +24,15 @@ public class MusicService
         _logger.LogInformation("Now updating music...");
         List<Music> musicList = new();
         var conf = _configuration.GetSection("SongProvider").Get<SongProviderConfig>();
-        musicList.AddRange(await LoadBilibiliMusic(conf.Bilibili));
+        if (conf?.Bilibili != null)
+        {
+            musicList.AddRange(await LoadBilibiliMusic(conf.Bilibili));
+        }
         AvailMusics = musicList;
         _logger.LogInformation($"Update success. Collected {AvailMusics.Count} musics.");
     }
 
-    private async Task<List<Music>> LoadBilibiliMusic(List<string> uids)
+    private async Task<IEnumerable<Music>> LoadBilibiliMusic(List<string> uids)
     {
         List<Music> musics = new();
         var client = _httpClientFactory.CreateClient();
@@ -41,7 +40,7 @@ public class MusicService
         foreach (var uid in uids)
         {
             _logger.LogInformation("Collect music from uid: " + uid);
-            int pn = 1;
+            var pn = 1;
             // get music result from uid
             try
             {
@@ -50,7 +49,7 @@ public class MusicService
                     var url =
                         $"https://api.bilibili.com/x/space/arc/search?mid={uid}&ps=50&tid=3&pn={pn}&order=pubdate";
                     var response = await client.GetFromJsonAsync<BiliSearchApiModel>(url);
-                    if (response.Code != 0)
+                    if (response!.Code != 0)
                     {
                         throw new Exception(
                             $"BiliApi error! \n Trying get uid: {uid} \n Code: {response.Code}\n Message: {response.Message}");
@@ -80,7 +79,7 @@ public class MusicService
                 _logger.LogError(e.Message);
             }
         }
-
-        return musics;
+        
+        return musics.DistinctBy(t => t.Url);;
     }
 }
