@@ -28,6 +28,9 @@ public class MusicService
         {
             musicList.AddRange(await LoadBilibiliMusic(conf.Bilibili));
         }
+
+        for (var i = 0; i < musicList.Count; ++i) musicList[i].Id = i;
+        
         AvailMusics = musicList;
         _logger.LogInformation($"Update success. Collected {AvailMusics.Count} musics.");
     }
