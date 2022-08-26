@@ -17,7 +17,7 @@ public class HomeController : ControllerBase
 
     public HelloApiResult Index()
     {
-        return new HelloApiResult()
+        return new HelloApiResult
         {
             Code = 0,
             Message = $"Welcome to EdgeNeko Api! Visit our wiki at {_configuration["WikiPath"]}",
@@ -25,7 +25,9 @@ public class HomeController : ControllerBase
             Mode = environment.EnvironmentName,
             ServerTime = DateTime.Now,
             ServerTimeUtc = DateTime.UtcNow,
-            ServerRuntime = $"{RuntimeInformation.FrameworkDescription} on {RuntimeInformation.OSDescription}"
+            ServerRuntime = $"{RuntimeInformation.FrameworkDescription} on {RuntimeInformation.OSDescription}",
+            RequestHost = Request.HttpContext.Connection.RemoteIpAddress?.ToString(),
+            RequestHttps = Request.IsHttps
         };
     }
 }
