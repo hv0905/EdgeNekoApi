@@ -65,8 +65,10 @@ public class MusicService
                         AuthorName = t.Author,
                         CoverUrl = t.Pic,
                         Url = $"https://www.bilibili.com/video/{t.Bvid}",
+                        EmbedPlayerUrl = $"https://player.bilibili.com/player.html?aid={t.Aid}",
                         Source = "bilibili",
-                        Description = t.Description
+                        Description = t.Description,
+                        PublishTime = DateTimeOffset.FromUnixTimeSeconds(t.Created).UtcDateTime
                     }));
 
                     if (50 * pn >= response.Data.Page.Count) // last page
@@ -83,6 +85,6 @@ public class MusicService
             }
         }
         
-        return musics.DistinctBy(t => t.Url);;
+        return musics.DistinctBy(t => t.Url);
     }
 }

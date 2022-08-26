@@ -72,7 +72,9 @@ public class MusicController : ControllerBase
 
         var music = _musicService.AvailMusics
             .Where(t => (t.Name?.Contains(criteria) ?? false) || (t.Description?.Contains(criteria) ?? false))
-            .Take(count).ToList();
+            .OrderByDescending(t => t.PublishTime)
+            .Take(count)
+            .ToList();
         if (music.Count == 0)
         {
             return new NiProtocol()
@@ -90,29 +92,53 @@ public class MusicController : ControllerBase
     }
     
     [HttpGet]
-    [Route("/music/ByAuthor/{author?}/{count?}")]
-    public NiProtocol ByAuthor(string author, int count = 3)
+    [Route("/music/ByAuthor/{author}/{count?}")]
+    [Route("/music/ByAuthor/")]
+    public NiProtocol ByAuthor([Required]string author, int count = 3)
     {
-        var collection = _musicService.AvailMusics;
-        if (!string.IsNullOrEmpty(author))
+        if (string.IsNullOrEmpty(author))
         {
-            collection = collection.Where(m => m.AuthorName?.Contains(author) ?? false).ToList();
-        }
-
-        if (collection.Count == 0)
-        {
-            return new NiProtocol
+            return new NiDataProtocol<Music>
             {
-                Code = ErrorCode.NotFound,
-                Message = "No song found with the given author."
+                Code = ErrorCode.InvalidInput,
+                Message = "Invalid parameter"
             };
         }
-        var music = collection.Take(count).ToList();
+
+        var music = _musicService.AvailMusics
+            .Where(t => (t.AuthorName?.Contains(author) ?? false) || (t.Description?.Contains(author) ?? false)) // for co-author
+            .OrderByDescending(t => t.PublishTime)
+            .Take(count)
+            .ToList();
+        if (music.Count == 0)
+        {
+            return new NiProtocol()
+            {
+                Code = ErrorCode.NotFound,
+                Message = "No song found with the given criteria"
+            };
+        }
         return new NiDataProtocol<List<Music>>
         {
-            Data = music,
             Code = ErrorCode.Success,
-            Message = $"Successfully get {count} newest song, Enjoy!"
+            Message = $"Successfully find {music.Count} songs with the given criteria",
+            Data = music
+        };
+    }
+    
+    [HttpGet]
+    [Route("/music/Latest/{count?}")]
+    public NiProtocol Latest(int count = 3)
+    {
+        var music = _musicService.AvailMusics
+            .OrderByDescending(t => t.PublishTime)
+            .Take(count)
+            .ToList();
+        return new NiDataProtocol<List<Music>>
+        {
+            Code = ErrorCode.Success,
+            Message = $"Successfully find {music.Count} newest song.",
+            Data = music
         };
     }
 }
