@@ -24,8 +24,7 @@ public class MusicController : ControllerBase
         {
             collection = collection.Where(m => m.AuthorName?.Contains(author) ?? false).ToList();
         }
-        var random = new Random();
-        var index = random.Next(0, collection.Count);
+        var index = Random.Shared.Next(0, collection.Count);
         var music = collection[index];
         return new NiDataProtocol<Music>
         {
