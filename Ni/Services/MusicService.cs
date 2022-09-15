@@ -38,7 +38,7 @@ public class MusicService
     private async Task<IEnumerable<Music>> LoadBilibiliMusic(List<string> uids)
     {
         List<Music> musics = new();
-        var client = _httpClientFactory.CreateClient();
+        var client = _httpClientFactory.CreateClient("Chrome");
 
         foreach (var uid in uids)
         {
