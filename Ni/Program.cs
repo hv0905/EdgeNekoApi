@@ -15,7 +15,7 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddSwaggerGen();
 }
 
-builder.Services.AddHttpClient( "Chrome", options =>
+builder.Services.AddHttpClient("Chrome", options =>
 {
     options.DefaultRequestHeaders.UserAgent.TryParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
     options.DefaultRequestHeaders.UserAgent.TryParseAdd("AppleWebKit/537.36 (KHTML, like Gecko)");

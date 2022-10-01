@@ -1,4 +1,5 @@
-﻿using Ni.Models;
+﻿using System.Net;
+using Ni.Models;
 using Ni.Models.Bilibili;
 using Ni.Models.Config;
 
@@ -37,9 +38,12 @@ public class MusicService
 
     private async Task<IEnumerable<Music>> LoadBilibiliMusic(List<string> uids)
     {
+        var latency = _configuration.GetSection("MusicUpdateConfig").GetValue("BilibiliRequestInterval", 0);
         List<Music> musics = new();
         var client = _httpClientFactory.CreateClient("Chrome");
-
+        _logger.LogInformation("Access bilibili.com for a piece of cookie");
+        //the cookie will be saved automatically to CookieContainer
+        await client.GetAsync("https://www.bilibili.com");
         foreach (var uid in uids)
         {
             _logger.LogInformation("Collect music from uid: " + uid);
@@ -51,6 +55,7 @@ public class MusicService
                 {
                     var url =
                         $"https://api.bilibili.com/x/space/arc/search?mid={uid}&ps=50&tid=3&pn={pn}&order=pubdate";
+                    await Task.Delay(latency);
                     var response = await client.GetFromJsonAsync<BiliSearchApiModel>(url);
                     if (response!.Code != 0)
                     {
